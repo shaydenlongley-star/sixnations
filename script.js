@@ -1,4 +1,13 @@
- const API_URL = 'https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4714&s=2026';
+const teamColors = {
+    'England Rugby': '#CF142B',
+    'France Rugby': '#002395',
+    'Ireland Rugby': '#169B62',
+    'Scotland Rugby': '#003DA5',
+    'Wales Rugby': '#C8102E',
+    'Italy Rugby': '#0032A0'
+  };
+
+  const API_URL = 'https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4714&s=2026';
 
   fetch(API_URL)
     .then(response => response.json())
@@ -11,6 +20,11 @@
       console.log('Error:', error);
     });
 
+  function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
   function displayFixtures(events) {
     const container = document.getElementById('fixtures-list');
     container.innerHTML = '';
@@ -20,23 +34,30 @@
 
       const card = document.createElement('div');
       card.className = 'match-card';
+      const homeColor = teamColors[match.strHomeTeam] || '#1a1a2e';
+      const awayColor = teamColors[match.strAwayTeam] || '#1a1a2e';
+      card.style.background = `linear-gradient(to right, ${homeColor}55 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95)
+  60%, ${awayColor}55 100%)`;
 
-       card.innerHTML = `
-        <div class="round">Round ${match.intRound}</div>
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="round">Round ${match.intRound}</div>
+          <div class="status-badge ${isFinished ? 'ft' : 'upcoming'}">${isFinished ? 'Full Time' : 'Upcoming'}</div>
+        </div>
         <div class="match">
           <span class="team">
             <img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" class="badge">
-            ${match.strHomeTeam}
+            ${match.strHomeTeam.replace(' Rugby', '')}
           </span>
-          <span class="score">
+          <span class="score ${isFinished ? 'finished' : ''}">
             ${isFinished ? `${match.intHomeScore} - ${match.intAwayScore}` : 'vs'}
           </span>
           <span class="team away">
-            ${match.strAwayTeam}
+            ${match.strAwayTeam.replace(' Rugby', '')}
             <img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" class="badge">
           </span>
         </div>
-        <div class="date">${match.dateEvent}</div>
+        <div class="date">${formatDate(match.dateEvent)}</div>
       `;
 
       container.appendChild(card);
@@ -93,8 +114,10 @@
         </thead>
         <tbody>
           ${sorted.map(([name, stats], index) => `
-            <tr>
-              <td>${index + 1}. ${name}</td>
+            <tr class="${index === 0 ? 'top' : ''}">
+              <td style="border-left: 4px solid ${teamColors[name] || '#666'};">
+                ${index + 1}. ${name.replace(' Rugby', '')}
+              </td>
               <td>${stats.played}</td>
               <td>${stats.won}</td>
               <td>${stats.lost}</td>
