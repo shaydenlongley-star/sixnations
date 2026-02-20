@@ -91,9 +91,11 @@
         const odds = getMatchOdds(oddsData, match.strHomeTeam, match.strAwayTeam);
         if (odds) {
           const split = Math.round(odds.home * 100);
-          card.style.background = `linear-gradient(to right, ${homeColor}44 0%, ${homeColor}22 ${split}%, ${awayColor}22 ${split}%, ${awayColor}44 100%)`;
+          const blendStart = Math.max(split - 12, 0);
+          const blendEnd = Math.min(split + 12, 100);
+          card.style.background = `linear-gradient(to right, ${homeColor}55 0%, ${homeColor}22 ${blendStart}%, ${awayColor}22 ${blendEnd}%, ${awayColor}55 100%)`;
           probHTML = `
-            <div class="prob-bar" style="background: linear-gradient(to right, ${homeColor} 0%, ${homeColor} ${split}%, ${awayColor} ${split}%, ${awayColor} 100%);">
+            <div class="prob-bar" style="background: linear-gradient(to right, ${homeColor} 0%, ${homeColor}cc ${blendStart}%, ${awayColor}cc ${blendEnd}%, ${awayColor} 100%);">
               <span class="prob-label-home">${split}%</span>
               <span class="prob-label-away">${100 - split}%</span>
             </div>
