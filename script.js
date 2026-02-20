@@ -1,4 +1,4 @@
-const teamColors = {
+ const teamColors = {
     'England Rugby': '#CF142B',
     'France Rugby': '#002395',
     'Ireland Rugby': '#169B62',
@@ -7,37 +7,109 @@ const teamColors = {
     'Italy Rugby': '#0032A0'
   };
 
-  const API_URL = 'https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4714&s=2026';
+  const oddsTeamMap = {
+    'England Rugby': 'England',
+    'France Rugby': 'France',
+    'Ireland Rugby': 'Ireland',
+    'Scotland Rugby': 'Scotland',
+    'Wales Rugby': 'Wales',
+    'Italy Rugby': 'Italy'
+  };
 
-  fetch(API_URL)
-    .then(response => response.json())
-    .then(data => {
-      const events = data.events;
-      displayFixtures(events);
-      displayStandings(events);
-    })
-    .catch(error => {
-      console.log('Error:', error);
-    });
+  const FIXTURES_URL = 'https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4714&s=2026';
+  const ODDS_URL =
+  'https://api.the-odds-api.com/v4/sports/rugbyunion_six_nations/odds/?apiKey=e90515b97a1806117af777a4d518a22d&regions=uk&markets=h2h&oddsFormat=decimal';
+
+  Promise.all([
+    fetch(FIXTURES_URL).then(r => r.json()),
+    fetch(ODDS_URL).then(r => r.json())
+  ])
+  .then(([fixturesData, oddsData]) => {
+    const events = fixturesData.events;
+    displayFixtures(events, oddsData);
+    displayStandings(events);
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
 
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  function displayFixtures(events) {
+  function getMatchOdds(oddsData, homeTeam, awayTeam) {
+    const homeOddsName = oddsTeamMap[homeTeam];
+    const awayOddsName = oddsTeamMap[awayTeam];
+
+    const match = oddsData.find(game =>
+      (game.home_team === homeOddsName && game.away_team === awayOddsName) ||
+      (game.home_team === awayOddsName && game.away_team === homeOddsName)
+    );
+
+    if (!match || !match.bookmakers.length) return null;
+
+    const homePrices = [];
+    const awayPrices = [];
+
+    match.bookmakers.forEach(bookmaker => {
+      const market = bookmaker.markets.find(m => m.key === 'h2h');
+      if (!market) return;
+      const homeOutcome = market.outcomes.find(o => o.name === homeOddsName);
+      const awayOutcome = market.outcomes.find(o => o.name === awayOddsName);
+      if (homeOutcome) homePrices.push(homeOutcome.price);
+      if (awayOutcome) awayPrices.push(awayOutcome.price);
+    });
+
+    if (!homePrices.length || !awayPrices.length) return null;
+
+    const avgHome = homePrices.reduce((a, b) => a + b) / homePrices.length;
+    const avgAway = awayPrices.reduce((a, b) => a + b) / awayPrices.length;
+
+    const homeProb = 1 / avgHome;
+    const awayProb = 1 / avgAway;
+    const total = homeProb + awayProb;
+
+    return { home: homeProb / total, away: awayProb / total };
+  }
+
+  function displayFixtures(events, oddsData) {
     const container = document.getElementById('fixtures-list');
     container.innerHTML = '';
 
     events.forEach(match => {
       const isFinished = match.strStatus === 'FT';
-
       const card = document.createElement('div');
       card.className = 'match-card';
+
       const homeColor = teamColors[match.strHomeTeam] || '#1a1a2e';
       const awayColor = teamColors[match.strAwayTeam] || '#1a1a2e';
-      card.style.background = `linear-gradient(to right, ${homeColor}55 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95)
-  60%, ${awayColor}55 100%)`;
+
+      let probHTML = '';
+
+      if (!isFinished) {
+        const odds = getMatchOdds(oddsData, match.strHomeTeam, match.strAwayTeam);
+        if (odds) {
+          const homeAlpha = Math.round((0.15 + odds.home * 0.65) * 255).toString(16).padStart(2, '0');
+          const awayAlpha = Math.round((0.15 + odds.away * 0.65) * 255).toString(16).padStart(2, '0');
+          card.style.background = `linear-gradient(to right, ${homeColor}${homeAlpha} 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95) 60%,
+  ${awayColor}${awayAlpha} 100%)`;
+          probHTML = `
+            <div class="prob-bar">
+              <div class="prob-home" style="width: ${odds.home * 100}%; background: ${homeColor};">
+                <span>${Math.round(odds.home * 100)}%</span>
+              </div>
+              <div class="prob-away" style="width: ${odds.away * 100}%; background: ${awayColor};">
+                <span>${Math.round(odds.away * 100)}%</span>
+              </div>
+            </div>
+          `;
+        } else {
+          card.style.background = `linear-gradient(to right, ${homeColor}55 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95) 60%, ${awayColor}55 100%)`;
+        }
+      } else {
+        card.style.background = `linear-gradient(to right, ${homeColor}55 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95) 60%, ${awayColor}55 100%)`;
+      }
 
       card.innerHTML = `
         <div class="card-top">
@@ -57,6 +129,7 @@ const teamColors = {
             <img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" class="badge">
           </span>
         </div>
+        ${probHTML}
         <div class="date">${formatDate(match.dateEvent)}</div>
       `;
 
@@ -129,3 +202,4 @@ const teamColors = {
       </table>
     `;
   }
+
