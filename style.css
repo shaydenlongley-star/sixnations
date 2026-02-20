@@ -252,3 +252,34 @@
 .prob-label-away {
   right: 0;
 }
+
+@media (max-width: 768px) {
+  .match-card {
+    padding: 14px 12px;
+  }
+
+  .badge {
+    width: 20px;
+    height: 20px;
+  }
+
+  .team-name {
+    font-size: 0.75rem;
+    padding-left: 6px;
+  }
+
+  .away-name {
+    padding-right: 6px;
+  }
+
+  .score {
+    font-size: 1.1rem;
+    min-width: 60px;
+    margin: 0 6px;
+    padding: 6px 10px;
+  }
+
+  .match-date {
+    font-size: 0.5rem;
+  }
+}
