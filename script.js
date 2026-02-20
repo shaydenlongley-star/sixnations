@@ -90,18 +90,12 @@
       if (!isFinished) {
         const odds = getMatchOdds(oddsData, match.strHomeTeam, match.strAwayTeam);
         if (odds) {
-          const homeAlpha = Math.round((0.15 + odds.home * 0.65) * 255).toString(16).padStart(2, '0');
-          const awayAlpha = Math.round((0.15 + odds.away * 0.65) * 255).toString(16).padStart(2, '0');
-          card.style.background = `linear-gradient(to right, ${homeColor}${homeAlpha} 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95) 60%,
-  ${awayColor}${awayAlpha} 100%)`;
+          const split = Math.round(odds.home * 100);
+          card.style.background = `linear-gradient(to right, ${homeColor}44 0%, ${homeColor}22 ${split}%, ${awayColor}22 ${split}%, ${awayColor}44 100%)`;
           probHTML = `
-            <div class="prob-bar">
-              <div class="prob-home" style="width: ${odds.home * 100}%; background: ${homeColor};">
-                <span>${Math.round(odds.home * 100)}%</span>
-              </div>
-              <div class="prob-away" style="width: ${odds.away * 100}%; background: ${awayColor};">
-                <span>${Math.round(odds.away * 100)}%</span>
-              </div>
+            <div class="prob-bar" style="background: linear-gradient(to right, ${homeColor} 0%, ${homeColor} ${split}%, ${awayColor} ${split}%, ${awayColor} 100%);">
+              <span class="prob-label-home">${split}%</span>
+              <span class="prob-label-away">${100 - split}%</span>
             </div>
           `;
         } else {

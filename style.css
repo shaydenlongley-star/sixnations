@@ -223,39 +223,28 @@
   }
 
 .prob-bar {
-  display: flex;
-  height: 24px;
-  border-radius: 4px;
-  overflow: hidden;
+  position: relative;
+  height: 6px;
+  border-radius: 0 0 8px 8px;
   margin-top: 14px;
-  gap: 2px;
+  opacity: 0.7;
 }
 
-.prob-home {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding-left: 8px;
+.prob-label-home,
+.prob-label-away {
+  position: absolute;
+  top: 10px;
   font-family: 'Oswald', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.9);
-  opacity: 0.8;
-  border-radius: 4px 0 0 4px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.prob-away {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 8px;
-  font-family: 'Oswald', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.9);
-  opacity: 0.8;
-  border-radius: 0 4px 4px 0;
+.prob-label-home {
+  left: 0;
+}
+
+.prob-label-away {
+  right: 0;
 }
