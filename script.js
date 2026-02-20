@@ -113,20 +113,16 @@
           <div class="status-badge ${isFinished ? 'ft' : 'upcoming'}">${isFinished ? 'Full Time' : 'Upcoming'}</div>
         </div>
         <div class="match">
-          <span class="team">
-            <img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" class="badge">
-            ${match.strHomeTeam.replace(' Rugby', '')}
-          </span>
+          <img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" class="badge">
+          <span class="team-name">${match.strHomeTeam.replace(' Rugby', '')}</span>
           <span class="score ${isFinished ? 'finished' : ''}">
+            <span class="match-date">${formatDate(match.dateEvent)}</span>
             ${isFinished ? `${match.intHomeScore} - ${match.intAwayScore}` : 'vs'}
           </span>
-          <span class="team away">
-            ${match.strAwayTeam.replace(' Rugby', '')}
-            <img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" class="badge">
-          </span>
+          <span class="team-name away-name">${match.strAwayTeam.replace(' Rugby', '')}</span>
+          <img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" class="badge">
         </div>
         ${probHTML}
-        <div class="date">${formatDate(match.dateEvent)}</div>
       `;
 
       container.appendChild(card);
