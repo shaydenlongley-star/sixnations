@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    background: #0a0a0a;
+    color: #ffffff;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #1a1a2e;
+    border-bottom: 4px solid #c8102e;
+    padding: 24px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  section {
+    margin-bottom: 60px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #c8102e;
+    border-left: 4px solid #c8102e;
+    padding-left: 12px;
+    margin-bottom: 24px;
+  }
+
+  /* STANDINGS TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1a1a2e;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  thead {
+    background: #c8102e;
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #2a2a4a;
+    font-size: 0.95rem;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: #2a2a4a;
+  }
+
+  /* MATCH CARDS */
+  .match-card {
+    background: #1a1a2e;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border-left: 4px solid #2a2a4a;
+    transition: border-color 0.2s;
+  }
+
+  .match-card:hover {
+    border-left-color: #c8102e;
+  }
+
+  .round {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .match {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+  }
+
+  .team {
+    flex: 1;
+    font-weight: 600;
+  }
+
+  .team:last-child {
+    text-align: right;
+  }
+
+  .score {
+    background: #0a0a0a;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #c8102e;
+    margin: 0 16px;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .date {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 8px;
+    text-align: right;
+  }
+.badge {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin: 0 8px;
+  }
+
+  .team.away {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
