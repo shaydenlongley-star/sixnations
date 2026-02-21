@@ -237,12 +237,13 @@ tr:not(.top):hover td {
 }
 
 .chevron {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   margin-left: auto;
   flex-shrink: 0;
   transition: transform 0.3s ease;
   opacity: 0.6;
+  pointer-events: none;
 }
 
 #grand-slam-toggle.open .chevron {
