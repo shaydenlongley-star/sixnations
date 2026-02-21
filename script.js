@@ -211,7 +211,7 @@ function displayFixtures(events, oddsData) {
         <span class="team-name">${match.strHomeTeam.replace(' Rugby', '')}</span>
         <span class="score ${isFinished ? 'finished' : ''}">
           <span class="match-date">${formatDate(match.dateEvent)}</span>
-          ${isFinished ? `${match.intHomeScore} - ${match.intAwayScore}` : 'vs'}
+          ${isFinished ? `<span class="score-num" data-target="${match.intHomeScore}">0</span> - <span class="score-num" data-target="${match.intAwayScore}">0</span>` : 'vs'}
           ${countdownHTML}
         </span>
         <span class="team-name away-name">${match.strAwayTeam.replace(' Rugby', '')}</span>
@@ -224,6 +224,35 @@ function displayFixtures(events, oddsData) {
   });
 
   startCountdowns();
+  observeScores();
+}
+
+function animateScore(el, target) {
+  const duration = 700;
+  const start = performance.now();
+  const update = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+function observeScores() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.querySelectorAll('.score-num').forEach(el => {
+        animateScore(el, parseInt(el.dataset.target));
+      });
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.match-card').forEach(card => {
+    if (card.querySelector('.score-num')) observer.observe(card);
+  });
 }
 
 function displayStandings(events) {
