@@ -459,43 +459,6 @@ tr:not(.top):hover td {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.status-badge.live {
-  background: rgba(255, 50, 50, 0.15);
-  color: #ff4444;
-  border: 1px solid rgba(255, 50, 50, 0.45);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ff4444;
-  flex-shrink: 0;
-  animation: pulseDot 1s infinite;
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
-}
-
-.score.live-score {
-  color: #ff9900;
-  border-color: rgba(255, 153, 0, 0.4);
-  box-shadow: 0 0 20px rgba(255, 153, 0, 0.2);
-}
-
-.live-time {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #ff4444;
-  letter-spacing: 1px;
-  font-family: 'Oswald', sans-serif;
-  animation: pulseDot 1s infinite;
-}
 
 .match {
   display: flex;
