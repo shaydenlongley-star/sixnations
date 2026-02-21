@@ -211,7 +211,7 @@ function displayFixtures(events, oddsData) {
         <span class="team-name">${match.strHomeTeam.replace(' Rugby', '')}</span>
         <span class="score ${isFinished ? 'finished' : ''}">
           <span class="match-date">${formatDate(match.dateEvent)}</span>
-          ${isFinished ? `<span class="score-num" data-target="${match.intHomeScore}">0</span> - <span class="score-num" data-target="${match.intAwayScore}">0</span>` : 'vs'}
+          ${isFinished ? `<span class="score-line"><span class="score-num" data-target="${match.intHomeScore}">0</span> - <span class="score-num" data-target="${match.intAwayScore}">0</span></span>` : 'vs'}
           ${countdownHTML}
         </span>
         <span class="team-name away-name">${match.strAwayTeam.replace(' Rugby', '')}</span>
