@@ -208,14 +208,13 @@ tr:not(.top):hover td {
 
 /* TROPHY for 1st place */
 .trophy-icon {
-  width: 15px;
-  height: 15px;
-  fill: #FFD700;
+  width: 16px;
+  height: 16px;
   vertical-align: middle;
   margin-right: 5px;
   position: relative;
   top: -1px;
-  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.5));
 }
 
 /* MATCH CARDS */
