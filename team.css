@@ -61,8 +61,9 @@
 }
 
 .player-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: color-mix(in srgb, var(--team-color) 10%, transparent);
+  border-color: color-mix(in srgb, var(--team-color) 60%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--team-color) 30%, transparent);
 }
 
 .player-card.captain {
