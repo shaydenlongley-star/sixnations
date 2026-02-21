@@ -340,7 +340,8 @@ tr:not(.top):hover td {
   pointer-events: none;
 }
 
-#grand-slam-toggle.open .chevron {
+#grand-slam-toggle.open .chevron,
+#try-scorers-toggle.open .chevron {
   transform: rotate(180deg);
 }
 
