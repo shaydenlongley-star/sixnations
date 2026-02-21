@@ -16,6 +16,8 @@ const oddsTeamMap = {
   'Italy Rugby': 'Italy'
 };
 
+const TROPHY_SVG = `<svg class="trophy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4v7a5 5 0 0 0 10 0V4"/><path d="M17 5h2a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4"/><path d="M7 5H5a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4"/></svg>`;
+
 const FIXTURES_URL = 'https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4714&s=2026';
 const ODDS_URL = 'https://api.the-odds-api.com/v4/sports/rugbyunion_six_nations/odds/?apiKey=e90515b97a1806117af777a4d518a22d&regions=uk&markets=h2h&oddsFormat=decimal';
 
@@ -42,7 +44,6 @@ function load() {
   });
 }
 
-// Auto-refresh every 60 seconds
 load();
 setInterval(load, 60000);
 
@@ -78,9 +79,7 @@ function startCountdowns() {
   if (countdownInterval) clearInterval(countdownInterval);
   countdownInterval = setInterval(() => {
     document.querySelectorAll('.countdown[data-date]').forEach(el => {
-      const date = el.dataset.date;
-      const time = el.dataset.time;
-      const text = getCountdown(date, time);
+      const text = getCountdown(el.dataset.date, el.dataset.time);
       el.textContent = text ? `Kicks off in ${text}` : '';
     });
   }, 1000);
@@ -113,7 +112,6 @@ function getMatchOdds(oddsData, homeTeam, awayTeam) {
 
   const avgHome = homePrices.reduce((a, b) => a + b) / homePrices.length;
   const avgAway = awayPrices.reduce((a, b) => a + b) / awayPrices.length;
-
   const homeProb = 1 / avgHome;
   const awayProb = 1 / avgAway;
   const total = homeProb + awayProb;
@@ -257,17 +255,23 @@ function observeScores() {
 
 function displayStandings(events) {
   const teams = {};
+  const teamForm = {};
 
-  events.forEach(match => {
-    if (match.strStatus !== 'FT') return;
+  const sortedFinished = [...events]
+    .filter(e => e.strStatus === 'FT')
+    .sort((a, b) => new Date(a.dateEvent) - new Date(b.dateEvent));
 
+  sortedFinished.forEach(match => {
     const home = match.strHomeTeam;
     const away = match.strAwayTeam;
     const homeScore = parseInt(match.intHomeScore);
     const awayScore = parseInt(match.intAwayScore);
+    const margin = Math.abs(homeScore - awayScore);
 
-    if (!teams[home]) teams[home] = { played: 0, won: 0, lost: 0, drawn: 0, points: 0, pf: 0, pa: 0 };
-    if (!teams[away]) teams[away] = { played: 0, won: 0, lost: 0, drawn: 0, points: 0, pf: 0, pa: 0 };
+    if (!teams[home]) teams[home] = { played: 0, won: 0, lost: 0, drawn: 0, points: 0, pf: 0, pa: 0, bp: 0 };
+    if (!teams[away]) teams[away] = { played: 0, won: 0, lost: 0, drawn: 0, points: 0, pf: 0, pa: 0, bp: 0 };
+    if (!teamForm[home]) teamForm[home] = [];
+    if (!teamForm[away]) teamForm[away] = [];
 
     teams[home].played++;
     teams[away].played++;
@@ -280,15 +284,29 @@ function displayStandings(events) {
       teams[home].won++;
       teams[home].points += 4;
       teams[away].lost++;
+      teamForm[home].push('W');
+      teamForm[away].push('L');
+      if (margin <= 7) {
+        teams[away].bp++;
+        teams[away].points++;
+      }
     } else if (awayScore > homeScore) {
       teams[away].won++;
       teams[away].points += 4;
       teams[home].lost++;
+      teamForm[away].push('W');
+      teamForm[home].push('L');
+      if (margin <= 7) {
+        teams[home].bp++;
+        teams[home].points++;
+      }
     } else {
       teams[home].drawn++;
       teams[away].drawn++;
       teams[home].points += 2;
       teams[away].points += 2;
+      teamForm[home].push('D');
+      teamForm[away].push('D');
     }
   });
 
@@ -312,25 +330,66 @@ function displayStandings(events) {
           <th>D</th>
           <th>PF</th>
           <th>PA</th>
+          <th>PD</th>
+          <th>BP</th>
           <th>Pts</th>
         </tr>
       </thead>
       <tbody>
-        ${sorted.map(([name, stats], index) => `
-          <tr class="${index === 0 ? 'top' : ''}">
-            <td style="border-left: 4px solid ${teamColors[name] || '#666'};">
-              ${index === 0 ? `<svg class="trophy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4v7a5 5 0 0 0 10 0V4"/><path d="M17 5h2a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4"/><path d="M7 5H5a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4"/></svg>` : `${index + 1}.`} <a href="team.html?team=${encodeURIComponent(name)}" class="team-link">${name.replace(' Rugby', '')}</a>
-            </td>
-            <td>${stats.played}</td>
-            <td>${stats.won}</td>
-            <td>${stats.lost}</td>
-            <td>${stats.drawn}</td>
-            <td>${stats.pf}</td>
-            <td>${stats.pa}</td>
-            <td><strong>${stats.points}</strong></td>
-          </tr>
-        `).join('')}
+        ${sorted.map(([name, stats], index) => {
+          const pd = stats.pf - stats.pa;
+          const formDots = (teamForm[name] || []).slice(-5).map(r =>
+            `<span class="form-dot ${r}" title="${r === 'W' ? 'Win' : r === 'L' ? 'Loss' : 'Draw'}"></span>`
+          ).join('');
+          return `
+            <tr class="${index === 0 ? 'top' : ''}">
+              <td style="border-left: 4px solid ${teamColors[name] || '#666'};">
+                <div class="team-cell">
+                  <span>${index === 0 ? TROPHY_SVG : `${index + 1}.`} <a href="team.html?team=${encodeURIComponent(name)}" class="team-link">${name.replace(' Rugby', '')}</a></span>
+                  <span class="form-dots">${formDots}</span>
+                </div>
+              </td>
+              <td>${stats.played}</td>
+              <td>${stats.won}</td>
+              <td>${stats.lost}</td>
+              <td>${stats.drawn}</td>
+              <td>${stats.pf}</td>
+              <td>${stats.pa}</td>
+              <td>${pd >= 0 ? '+' : ''}${pd}</td>
+              <td>${stats.bp}</td>
+              <td><strong>${stats.points}</strong></td>
+            </tr>
+          `;
+        }).join('')}
       </tbody>
     </table>
   `;
+
+  displayGrandSlam(teams, teamForm);
+}
+
+function displayGrandSlam(teams, teamForm) {
+  const container = document.getElementById('grand-slam');
+  if (!container) return;
+
+  const teamsWithGames = Object.entries(teams)
+    .filter(([_, s]) => s.played > 0)
+    .sort((a, b) => b[1].points - a[1].points);
+
+  if (teamsWithGames.length === 0) {
+    container.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-family:\'Inter\',sans-serif;font-size:0.9rem;">Tournament not yet started.</p>';
+    return;
+  }
+
+  container.innerHTML = teamsWithGames.map(([name, stats]) => {
+    const onTrack = stats.lost === 0 && stats.drawn === 0;
+    const color = teamColors[name] || '#666';
+    return `
+      <div class="gs-card" style="border-left: 3px solid ${color};">
+        <span class="gs-team">${name.replace(' Rugby', '')}</span>
+        <span class="gs-record">${stats.won}W ${stats.drawn}D ${stats.lost}L</span>
+        <span class="gs-badge ${onTrack ? 'on-track' : 'eliminated'}">${onTrack ? 'In Contention' : 'Eliminated'}</span>
+      </div>
+    `;
+  }).join('');
 }
