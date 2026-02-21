@@ -13,19 +13,37 @@
   color: #ffffff;
 }
 
-.position-group {
-  margin-bottom: 40px;
+.squad-section {
+  margin-bottom: 48px;
 }
 
-.position-group h3 {
+.section-title {
   font-family: 'Oswald', sans-serif;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   text-transform: uppercase;
   letter-spacing: 3px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.jersey-number {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 36px;
+  opacity: 0.9;
+}
+
+.player-info {
+  flex: 1;
 }
 
 .players-grid {

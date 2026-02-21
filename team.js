@@ -264,34 +264,69 @@ const squads = {
   }
 };
 
-const positionOrder = [
-  'Loosehead Prop', 'Tighthead Prop', 'Prop',
-  'Hooker',
-  'Lock',
-  'Flanker', 'Number 8',
-  'Scrum-half',
-  'Fly-half',
-  'Centre',
-  'Wing',
-  'Fullback'
-];
-
-const positionGroups = {
-  'Loosehead Prop': 'Props',
-  'Tighthead Prop': 'Props',
-  'Prop': 'Props',
-  'Hooker': 'Hookers',
-  'Lock': 'Locks',
-  'Flanker': 'Back Row',
-  'Number 8': 'Back Row',
-  'Scrum-half': 'Scrum-halves',
-  'Fly-half': 'Fly-halves',
-  'Centre': 'Centres',
-  'Wing': 'Wings',
-  'Fullback': 'Fullbacks'
+// Jersey number assignment: position -> [1st occurrence, 2nd, 3rd, ...]
+const jerseyMap = {
+  'Loosehead Prop': [1, 17],
+  'Tighthead Prop': [3, 18],
+  'Prop':           [17, 18],
+  'Hooker':         [2, 16],
+  'Lock':           [4, 5, 19],
+  'Flanker':        [6, 7, 20],
+  'Number 8':       [8, 20],
+  'Scrum-half':     [9, 21],
+  'Fly-half':       [10, 22],
+  'Centre':         [12, 13, 23],
+  'Wing':           [11, 14, 23],
+  'Fullback':       [15, 23],
 };
 
-const groupOrder = ['Props', 'Hookers', 'Locks', 'Back Row', 'Scrum-halves', 'Fly-halves', 'Centres', 'Wings', 'Fullbacks'];
+function assignNumbers(players) {
+  const counts = {};
+  return players.map(player => {
+    const pos = player.position;
+    counts[pos] = counts[pos] || 0;
+    const jerseyNumbers = jerseyMap[pos] || [];
+    const jersey = jerseyNumbers[counts[pos]] ?? null;
+    counts[pos]++;
+    let category = 'squad';
+    if (jersey !== null && jersey <= 15) category = 'starters';
+    else if (jersey !== null && jersey <= 23) category = 'bench';
+    return { ...player, jersey, category };
+  });
+}
+
+function buildSection(title, players, teamColor, captain) {
+  if (!players.length) return null;
+
+  const section = document.createElement('div');
+  section.className = 'squad-section';
+  section.innerHTML = `<h3 class="section-title">${title}</h3>`;
+
+  const grid = document.createElement('div');
+  grid.className = 'players-grid';
+
+  players.forEach(player => {
+    const isCaptain = player.name === captain;
+    const card = document.createElement('div');
+    card.className = 'player-card' + (isCaptain ? ' captain' : '');
+    if (isCaptain) card.style.borderColor = teamColor + '88';
+
+    card.innerHTML = `
+      <div class="player-row">
+        <span class="jersey-number" style="color: ${teamColor};">${player.jersey !== null ? '#' + player.jersey : '—'}</span>
+        <div class="player-info">
+          <div class="player-name">${player.name}</div>
+          <div class="player-position">${player.position}</div>
+          ${isCaptain ? '<span class="captain-badge">Captain</span>' : ''}
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  section.appendChild(grid);
+  return section;
+}
 
 const params = new URLSearchParams(window.location.search);
 const teamName = params.get('team');
@@ -308,41 +343,16 @@ if (!team) {
   header.style.borderBottomColor = team.color;
 
   const container = document.getElementById('squad-container');
+  const numbered = assignNumbers(team.players);
 
-  const grouped = {};
-  team.players.forEach(player => {
-    const group = positionGroups[player.position] || 'Others';
-    if (!grouped[group]) grouped[group] = [];
-    grouped[group].push(player);
-  });
+  const starters = numbered.filter(p => p.category === 'starters').sort((a, b) => a.jersey - b.jersey);
+  const bench    = numbered.filter(p => p.category === 'bench').sort((a, b) => a.jersey - b.jersey);
+  const squad    = numbered.filter(p => p.category === 'squad');
 
-  groupOrder.forEach(groupName => {
-    if (!grouped[groupName]) return;
+  [
+    buildSection('Starting XV', starters, team.color, team.captain),
+    buildSection('Replacements', bench, team.color, team.captain),
+    buildSection('Additional Squad', squad, team.color, team.captain),
+  ].forEach(el => { if (el) container.appendChild(el); });
 
-    const section = document.createElement('div');
-    section.className = 'position-group';
-
-    section.innerHTML = `<h3>${groupName}</h3>`;
-
-    const grid = document.createElement('div');
-    grid.className = 'players-grid';
-
-    grouped[groupName].forEach(player => {
-      const isCaptain = player.name === team.captain;
-      const card = document.createElement('div');
-      card.className = 'player-card' + (isCaptain ? ' captain' : '');
-      card.innerHTML = `
-        <div class="player-name">${player.name}</div>
-        <div class="player-position">${player.position}</div>
-        ${isCaptain ? '<span class="captain-badge">Captain</span>' : ''}
-      `;
-      if (isCaptain) {
-        card.style.borderColor = team.color + '88';
-      }
-      grid.appendChild(card);
-    });
-
-    section.appendChild(grid);
-    container.appendChild(section);
-  });
 }
