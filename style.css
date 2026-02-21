@@ -207,9 +207,15 @@ tr:not(.top):hover td {
 }
 
 /* TROPHY for 1st place */
-.trophy {
+.trophy-icon {
+  width: 15px;
+  height: 15px;
+  fill: #FFD700;
+  vertical-align: middle;
   margin-right: 5px;
-  font-size: 0.9em;
+  position: relative;
+  top: -1px;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
 }
 
 /* MATCH CARDS */

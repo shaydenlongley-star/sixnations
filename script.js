@@ -290,7 +290,7 @@ function displayStandings(events) {
         ${sorted.map(([name, stats], index) => `
           <tr class="${index === 0 ? 'top' : ''}">
             <td style="border-left: 4px solid ${teamColors[name] || '#666'};">
-              ${index === 0 ? '<span class="trophy">🏆</span>' : `${index + 1}.`} <a href="team.html?team=${encodeURIComponent(name)}" class="team-link">${name.replace(' Rugby', '')}</a>
+              ${index === 0 ? `<svg class="trophy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 3h-3V1H7v2H4a1 1 0 0 0-1 1v3c0 2.9 2.16 5.3 5 5.91V14a3 3 0 0 0 3 3h1v2H8v2h8v-2h-4v-2h1a3 3 0 0 0 3-3v-1.09C18.84 12.3 21 9.9 21 7V4a1 1 0 0 0-1-1zM5 7V5h2v4.83A4.01 4.01 0 0 1 5 7zm14 0a4.01 4.01 0 0 1-2 3.83V5h2v2z"/></svg>` : `${index + 1}.`} <a href="team.html?team=${encodeURIComponent(name)}" class="team-link">${name.replace(' Rugby', '')}</a>
             </td>
             <td>${stats.played}</td>
             <td>${stats.won}</td>
