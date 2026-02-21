@@ -276,7 +276,7 @@ tr:not(.top):hover td {
 
 .try-team-name {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.55);
   margin-top: 2px;
   font-family: 'Inter', sans-serif;
 }

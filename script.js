@@ -59,6 +59,11 @@ load();
 setInterval(load, 60000);
 displayTryScorers();
 
+document.getElementById('try-scorers-toggle').addEventListener('click', () => {
+  document.getElementById('try-scorers-toggle').classList.toggle('open');
+  document.getElementById('try-scorers-list').classList.toggle('open');
+});
+
 document.getElementById('grand-slam-toggle').addEventListener('click', () => {
   document.getElementById('grand-slam-toggle').classList.toggle('open');
   document.getElementById('grand-slam').classList.toggle('open');
@@ -82,7 +87,7 @@ function displayTryScorers() {
         <span class="try-rank ${index === 0 ? 'gold' : ''}">${index + 1}</span>
         <div class="try-player">
           <div class="try-player-name">${player.name}</div>
-          <div class="try-team-name" style="color:${color}cc;">${player.team.replace(' Rugby', '')}</div>
+          <div class="try-team-name">${player.team.replace(' Rugby', '')}</div>
         </div>
         <div class="try-dots">${dots}</div>
         <span class="try-count" style="color:${color};">${player.tries}</span>
