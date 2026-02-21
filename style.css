@@ -230,6 +230,35 @@ tr:not(.top):hover td {
 .form-dot.L { background: #c8102e; }
 .form-dot.D { background: rgba(255, 255, 255, 0.3); }
 
+/* COLLAPSIBLE DROPDOWN */
+#grand-slam-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.chevron {
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  opacity: 0.6;
+}
+
+#grand-slam-toggle.open .chevron {
+  transform: rotate(180deg);
+}
+
+.collapsible {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.collapsible.open {
+  max-height: 600px;
+}
+
 /* GRAND SLAM TRACKER */
 .gs-card {
   display: flex;

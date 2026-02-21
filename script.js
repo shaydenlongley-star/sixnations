@@ -47,6 +47,11 @@ function load() {
 load();
 setInterval(load, 60000);
 
+document.getElementById('grand-slam-toggle').addEventListener('click', () => {
+  document.getElementById('grand-slam-toggle').classList.toggle('open');
+  document.getElementById('grand-slam').classList.toggle('open');
+});
+
 function updateLastUpdated() {
   const el = document.getElementById('last-updated');
   if (!el) return;
