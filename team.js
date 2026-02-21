@@ -35,6 +35,7 @@ const squads = {
       { name: 'Tommy Freeman', position: 'Wing' },
       { name: 'Immanuel Feyi-Waboso', position: 'Wing' },
       { name: 'Henry Arundell', position: 'Wing' },
+      { name: 'Tom Roebuck', position: 'Wing' },
       { name: 'Elliot Daly', position: 'Wing' },
       { name: 'Cadan Murley', position: 'Wing' },
       { name: 'George Furbank', position: 'Fullback' },
@@ -264,30 +265,74 @@ const squads = {
   }
 };
 
-// Jersey number assignment: position -> [1st occurrence, 2nd, 3rd, ...]
-const jerseyMap = {
-  'Loosehead Prop': [1, 17],
-  'Tighthead Prop': [3, 18],
-  'Prop':           [17, 18],
-  'Hooker':         [2, 16],
-  'Lock':           [4, 5, 19],
-  'Flanker':        [6, 7, 20],
-  'Number 8':       [8, 20],
-  'Scrum-half':     [9, 21],
-  'Fly-half':       [10, 22],
-  'Centre':         [12, 13, 23],
-  'Wing':           [11, 14, 23],
-  'Fullback':       [15, 23],
+// Actual jersey numbers from each team's Round 1 team sheet
+const jerseyNumbers = {
+  'England Rugby': {
+    'Ellis Genge': 1, 'Jamie George': 2, 'Joe Heyes': 3,
+    'Alex Coles': 4, 'Ollie Chessum': 5, 'Guy Pepper': 6,
+    'Sam Underhill': 7, 'Ben Earl': 8, 'Alex Mitchell': 9,
+    'George Ford': 10, 'Henry Arundell': 11, 'Fraser Dingwall': 12,
+    'Tommy Freeman': 13, 'Tom Roebuck': 14, 'Freddie Steward': 15,
+    'Luke Cowan-Dickie': 16, 'Bevan Rodd': 17, 'Trevor Davison': 18,
+    'Maro Itoje': 19, 'Tom Curry': 20, 'Henry Pollock': 21,
+    'Ben Spencer': 22, 'Marcus Smith': 23,
+  },
+  'Wales Rugby': {
+    'Nicky Smith': 1, 'Dewi Lake': 2, 'Archie Griffin': 3,
+    'Dafydd Jenkins': 4, 'Adam Beard': 5, 'Alex Mann': 6,
+    'Josh Macleod': 7, 'Aaron Wainwright': 8, 'Tomos Williams': 9,
+    'Dan Edwards': 10, 'Josh Adams': 11, 'Ben Thomas': 12,
+    'Eddie James': 13, 'Ellis Mee': 14, 'Louis Rees-Zammit': 15,
+    'Liam Belcher': 16, 'Rhys Carre': 17, 'Tomas Francis': 18,
+    'Ben Carter': 19, 'Taine Plumtree': 20, 'Harri Deaves': 21,
+    'Kieran Hardy': 22, 'Mason Grady': 23,
+  },
+  'France Rugby': {
+    'Jean-Baptiste Gros': 1, 'Julien Marchand': 2, 'Dorian Aldegheri': 3,
+    'Charles Ollivon': 4, 'Mickaël Guillard': 5, 'François Cros': 6,
+    'Oscar Jegou': 7, 'Anthony Jelonch': 8, 'Antoine Dupont': 9,
+    'Matthieu Jalibert': 10, 'Louis Bielle-Biarrey': 11, 'Yoram Moefana': 12,
+    'Nicolas Depoortere': 13, 'Théo Attissogbe': 14, 'Thomas Ramos': 15,
+    'Peato Mauvaka': 16, 'Rodrigue Neti': 17, 'Régis Montagne': 18,
+    'Hugo Auradou': 19, 'Emmanuel Meafou': 20, 'Lenni Nouchi': 21,
+    'Baptiste Serin': 22, 'Kalvin Gourgues': 23,
+  },
+  'Ireland Rugby': {
+    'Jeremy Loughman': 1, 'Dan Sheehan': 2, 'Thomas Clarkson': 3,
+    'Joe McCarthy': 4, 'Tadhg Beirne': 5, 'Cian Prendergast': 6,
+    'Josh van der Flier': 7, 'Caelan Doris': 8, 'Jamison Gibson-Park': 9,
+    'Sam Prendergast': 10, 'Jacob Stockdale': 11, 'Stuart McCloskey': 12,
+    'Garry Ringrose': 13, 'Tommy O\'Brien': 14, 'Jamie Osborne': 15,
+    'Rónan Kelleher': 16, 'Michael Milne': 17, 'Finlay Bealham': 18,
+    'James Ryan': 19, 'Jack Conan': 20, 'Nick Timoney': 21,
+    'Craig Casey': 22, 'Jack Crowley': 23,
+  },
+  'Italy Rugby': {
+    'Danilo Fischetti': 1, 'Giacomo Nicotera': 2, 'Simone Ferrari': 3,
+    'Niccolò Cannone': 4, 'Andrea Zambonin': 5, 'Michele Lamaro': 6,
+    'Manuel Zuliani': 7, 'Lorenzo Cannone': 8, 'Alessandro Fusco': 9,
+    'Paolo Garbisi': 10, 'Monty Ioane': 11, 'Tommaso Menoncello': 12,
+    'Juan Ignacio Brex': 13, 'Louis Lynagh': 14, 'Leonardo Marin': 15,
+    'Tommaso Di Bartolomeo': 16, 'Mirco Spagnolo': 17, 'Muhamed Hasa': 18,
+    'Federico Ruzza': 19, 'Riccardo Favretto': 20, 'Alessandro Garbski': 21,
+    'Giacomo Da Re': 22, 'Lorenzo Pani': 23,
+  },
+  'Scotland Rugby': {
+    'Pierre Schoeman': 1, 'Ewan Ashman': 2, 'Zander Fagerson': 3,
+    'Scott Cummings': 4, 'Grant Gilchrist': 5, 'Matt Fagerson': 6,
+    'Rory Darge': 7, 'Jack Dempsey': 8, 'Ben White': 9,
+    'Finn Russell': 10, 'Jamie Dobie': 11, 'Sione Tuipulotu': 12,
+    'Huw Jones': 13, 'Kyle Steyn': 14, 'Tom Jordan': 15,
+    'George Turner': 16, 'Nathan McBeth': 17, 'Elliot Millar Mills': 18,
+    'Max Williamson': 19, 'Gregor Brown': 20, 'George Horne': 21,
+    'Adam Hastings': 22, 'Darcy Graham': 23,
+  },
 };
 
-function assignNumbers(players) {
-  const counts = {};
+function assignNumbers(players, teamName) {
+  const lookup = jerseyNumbers[teamName] || {};
   return players.map(player => {
-    const pos = player.position;
-    counts[pos] = counts[pos] || 0;
-    const jerseyNumbers = jerseyMap[pos] || [];
-    const jersey = jerseyNumbers[counts[pos]] ?? null;
-    counts[pos]++;
+    const jersey = lookup[player.name] ?? null;
     let category = 'squad';
     if (jersey !== null && jersey <= 15) category = 'starters';
     else if (jersey !== null && jersey <= 23) category = 'bench';
@@ -343,7 +388,7 @@ if (!team) {
   header.style.borderBottomColor = team.color;
 
   const container = document.getElementById('squad-container');
-  const numbered = assignNumbers(team.players);
+  const numbered = assignNumbers(team.players, teamName);
 
   const starters = numbered.filter(p => p.category === 'starters').sort((a, b) => a.jersey - b.jersey);
   const bench    = numbered.filter(p => p.category === 'bench').sort((a, b) => a.jersey - b.jersey);
