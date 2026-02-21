@@ -74,23 +74,26 @@ function displayTryScorers() {
   if (!container) return;
 
   const maxTries = tryScorers[0].tries;
+  const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
 
   container.innerHTML = tryScorers.map((player, index) => {
     const color = teamColors[player.team] || '#666';
-    const isLeader = player.tries === maxTries && index === 0;
-    const dots = Array.from({ length: player.tries }, () =>
-      `<span class="try-dot" style="background:${color};"></span>`
-    ).join('');
+    const pct = Math.round((player.tries / maxTries) * 100);
+    const rankColor = rankColors[index] || 'rgba(255,255,255,0.25)';
 
     return `
-      <div class="try-row ${isLeader ? 'leader' : ''}">
-        <span class="try-rank ${index === 0 ? 'gold' : ''}">${index + 1}</span>
+      <div class="try-row" style="border-left: 3px solid ${color}; background: linear-gradient(135deg, ${color}18 0%, rgba(6,8,16,0) 60%);">
+        <span class="try-rank" style="color: ${rankColor};">${index + 1}</span>
         <div class="try-player">
           <div class="try-player-name">${player.name}</div>
-          <div class="try-team-name">${player.team.replace(' Rugby', '')}</div>
+          <div class="try-bottom">
+            <span class="try-team-badge" style="border-color: ${color}66;">${player.team.replace(' Rugby', '')}</span>
+            <div class="try-bar-track">
+              <div class="try-bar-fill" style="width: ${pct}%; background: ${color};"></div>
+            </div>
+          </div>
         </div>
-        <div class="try-dots">${dots}</div>
-        <span class="try-count" style="color:${color};">${player.tries}</span>
+        <div class="try-count">${player.tries}<span class="try-label">tries</span></div>
       </div>
     `;
   }).join('');
