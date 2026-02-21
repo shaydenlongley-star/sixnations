@@ -1,37 +1,51 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Six Nations 2026</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-  href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
-   rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Six Nations 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    <header>
-      <div class="header-inner">
-        <h1>Six Nations</h1>
-        <p class="subtitle">2026 Championship</p>
+  <header>
+    <div class="header-inner">
+      <h1>Six Nations</h1>
+      <p class="subtitle">2026 Championship</p>
+    </div>
+  </header>
+
+  <main>
+    <section id="standings">
+      <h2>Standings</h2>
+      <div id="standings-table">
+        <div class="skeleton-table">
+          <div class="skeleton-row skeleton-header"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+        </div>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <section id="standings">
-        <h2>Standings</h2>
-        <div id="standings-table">Loading...</div>
-      </section>
+    <section id="fixtures">
+      <h2>Fixtures &amp; Results <span id="last-updated"></span></h2>
+      <div id="round-tabs"></div>
+      <div id="fixtures-list">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </section>
+  </main>
 
-      <section id="fixtures">
-        <h2>Fixtures & Results</h2>
-        <div id="fixtures-list">Loading...</div>
-      </section>
-    </main>
-
-    <script src="script.js"></script>
-  </body>
-  </html>
+  <script src="script.js"></script>
+</body>
+</html>

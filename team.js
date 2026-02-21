@@ -393,6 +393,7 @@ if (!team) {
 
   const header = document.getElementById('team-header');
   header.style.borderBottomColor = team.color;
+  header.style.background = `linear-gradient(135deg, #0d0d1a 0%, ${team.color}33 60%, ${team.color}55 100%)`;
 
   const container = document.getElementById('squad-container');
   const numbered = assignNumbers(team.players, teamName);

@@ -119,6 +119,16 @@
   color: #ffffff;
 }
 
+/* TEAM COLOUR FADE-IN TRANSITION */
+main {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .squad-meta p {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.5);
