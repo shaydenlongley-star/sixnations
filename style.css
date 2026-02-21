@@ -230,6 +230,77 @@ tr:not(.top):hover td {
 .form-dot.L { background: #c8102e; }
 .form-dot.D { background: rgba(255, 255, 255, 0.3); }
 
+/* TRY SCORERS */
+.try-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.try-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.try-row.leader {
+  background: rgba(255, 215, 0, 0.06);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.try-rank {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  min-width: 24px;
+}
+
+.try-rank.gold { color: #FFD700; }
+
+.try-player {
+  flex: 1;
+}
+
+.try-player-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.try-team-name {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 2px;
+  font-family: 'Inter', sans-serif;
+}
+
+.try-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.try-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.try-count {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 28px;
+  text-align: right;
+}
+
 /* COLLAPSIBLE DROPDOWN */
 #grand-slam-toggle {
   cursor: pointer;

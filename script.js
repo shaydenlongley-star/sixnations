@@ -16,6 +16,17 @@ const oddsTeamMap = {
   'Italy Rugby': 'Italy'
 };
 
+// Updated after each round — last updated: Round 3
+const tryScorers = [
+  { name: 'Henry Arundell',       team: 'England Rugby', tries: 4 },
+  { name: 'Theo Attissogbe',      team: 'France Rugby',  tries: 3 },
+  { name: 'Louis Bielle-Biarrey', team: 'France Rugby',  tries: 3 },
+  { name: 'Ben Earl',             team: 'England Rugby', tries: 2 },
+  { name: 'Matthieu Jalibert',    team: 'France Rugby',  tries: 2 },
+  { name: 'Huw Jones',            team: 'Scotland Rugby',tries: 2 },
+  { name: 'Charles Ollivon',      team: 'France Rugby',  tries: 2 },
+];
+
 const TROPHY_SVG = `<svg class="trophy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4v7a5 5 0 0 0 10 0V4"/><path d="M17 5h2a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4"/><path d="M7 5H5a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4"/></svg>`;
 
 const FIXTURES_URL = 'https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4714&s=2026';
@@ -46,11 +57,39 @@ function load() {
 
 load();
 setInterval(load, 60000);
+displayTryScorers();
 
 document.getElementById('grand-slam-toggle').addEventListener('click', () => {
   document.getElementById('grand-slam-toggle').classList.toggle('open');
   document.getElementById('grand-slam').classList.toggle('open');
 });
+
+function displayTryScorers() {
+  const container = document.getElementById('try-scorers-list');
+  if (!container) return;
+
+  const maxTries = tryScorers[0].tries;
+
+  container.innerHTML = tryScorers.map((player, index) => {
+    const color = teamColors[player.team] || '#666';
+    const isLeader = player.tries === maxTries && index === 0;
+    const dots = Array.from({ length: player.tries }, () =>
+      `<span class="try-dot" style="background:${color};"></span>`
+    ).join('');
+
+    return `
+      <div class="try-row ${isLeader ? 'leader' : ''}">
+        <span class="try-rank ${index === 0 ? 'gold' : ''}">${index + 1}</span>
+        <div class="try-player">
+          <div class="try-player-name">${player.name}</div>
+          <div class="try-team-name" style="color:${color}cc;">${player.team.replace(' Rugby', '')}</div>
+        </div>
+        <div class="try-dots">${dots}</div>
+        <span class="try-count" style="color:${color};">${player.tries}</span>
+      </div>
+    `;
+  }).join('');
+}
 
 function updateLastUpdated() {
   const el = document.getElementById('last-updated');
