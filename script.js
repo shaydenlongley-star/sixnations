@@ -113,14 +113,14 @@
           <div class="status-badge ${isFinished ? 'ft' : 'upcoming'}">${isFinished ? 'Full Time' : 'Upcoming'}</div>
         </div>
         <div class="match">
-          <img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" class="badge">
+          <a href="team.html?team=${encodeURIComponent(match.strHomeTeam)}"><img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" class="badge"></a>
           <span class="team-name">${match.strHomeTeam.replace(' Rugby', '')}</span>
           <span class="score ${isFinished ? 'finished' : ''}">
             <span class="match-date">${formatDate(match.dateEvent)}</span>
             ${isFinished ? `${match.intHomeScore} - ${match.intAwayScore}` : 'vs'}
           </span>
           <span class="team-name away-name">${match.strAwayTeam.replace(' Rugby', '')}</span>
-          <img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" class="badge">
+          <a href="team.html?team=${encodeURIComponent(match.strAwayTeam)}"><img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" class="badge"></a>
         </div>
         ${probHTML}
       `;
@@ -181,7 +181,7 @@
           ${sorted.map(([name, stats], index) => `
             <tr class="${index === 0 ? 'top' : ''}">
               <td style="border-left: 4px solid ${teamColors[name] || '#666'};">
-                ${index + 1}. ${name.replace(' Rugby', '')}
+                ${index + 1}. <a href="team.html?team=${encodeURIComponent(name)}" class="team-link">${name.replace(' Rugby', '')}</a>
               </td>
               <td>${stats.played}</td>
               <td>${stats.won}</td>
