@@ -29,6 +29,18 @@ const tryScorers = [
 
 const TROPHY_SVG = `<svg class="trophy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4v7a5 5 0 0 0 10 0V4"/><path d="M17 5h2a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4"/><path d="M7 5H5a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4"/></svg>`;
 
+const LIVE_STATUSES = ['1H', '2H', 'HT', 'ET', 'LIVE', 'P'];
+
+function getLiveTime(match) {
+  const s = match.strStatus;
+  const p = match.strProgress || '';
+  if (s === 'HT') return 'Half Time';
+  if (s === '1H') return p ? `H1  ${p}` : 'H1';
+  if (s === '2H') return p ? `H2  ${p}` : 'H2';
+  if (s === 'ET') return p ? `ET  ${p}` : 'Extra Time';
+  return s;
+}
+
 const FIXTURES_URL = 'https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4714&s=2026';
 const ODDS_URL = 'https://api.the-odds-api.com/v4/sports/rugbyunion_six_nations/odds/?apiKey=e90515b97a1806117af777a4d518a22d&regions=uk&markets=h2h&oddsFormat=decimal';
 
@@ -215,6 +227,7 @@ function displayFixtures(events, oddsData) {
 
   filtered.forEach(match => {
     const isFinished = match.strStatus === 'FT';
+    const isLive = LIVE_STATUSES.includes(match.strStatus);
     const card = document.createElement('div');
     card.className = 'match-card';
 
@@ -241,25 +254,43 @@ function displayFixtures(events, oddsData) {
         card.style.background = `linear-gradient(to right, ${homeColor}55 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95) 60%, ${awayColor}55 100%)`;
       }
 
-      const initialCountdown = getCountdown(match.dateEvent, match.strTime);
-      if (initialCountdown) {
-        countdownHTML = `<div class="countdown" data-date="${match.dateEvent}" data-time="${match.strTime || '15:00:00'}">Kicks off in ${initialCountdown}</div>`;
+      if (!isLive) {
+        const initialCountdown = getCountdown(match.dateEvent, match.strTime);
+        if (initialCountdown) {
+          countdownHTML = `<div class="countdown" data-date="${match.dateEvent}" data-time="${match.strTime || '15:00:00'}">Kicks off in ${initialCountdown}</div>`;
+        }
       }
-    } else {
+    } else if (!isLive) {
       card.style.background = `linear-gradient(to right, ${homeColor}55 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95) 60%, ${awayColor}55 100%)`;
     }
+
+    const statusClass = isFinished ? 'ft' : isLive ? 'live' : 'upcoming';
+    const statusText = isFinished ? 'Full Time' : isLive ? `<span class="live-dot"></span>Live` : 'Upcoming';
+
+    let scoreInner;
+    if (isFinished) {
+      scoreInner = `<span class="score-line"><span class="score-num" data-target="${match.intHomeScore}">0</span> - <span class="score-num" data-target="${match.intAwayScore}">0</span></span>`;
+    } else if (isLive) {
+      scoreInner = `${match.intHomeScore} - ${match.intAwayScore}`;
+    } else {
+      scoreInner = 'vs';
+    }
+
+    const topLineContent = isLive
+      ? `<span class="live-time">${getLiveTime(match)}</span>`
+      : `<span class="match-date">${formatDate(match.dateEvent)}</span>`;
 
     card.innerHTML = `
       <div class="card-top">
         <div class="round">Round ${match.intRound}</div>
-        <div class="status-badge ${isFinished ? 'ft' : 'upcoming'}">${isFinished ? 'Full Time' : 'Upcoming'}</div>
+        <div class="status-badge ${statusClass}">${statusText}</div>
       </div>
       <div class="match">
         <a href="team.html?team=${encodeURIComponent(match.strHomeTeam)}"><img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" class="badge"></a>
         <span class="team-name">${match.strHomeTeam.replace(' Rugby', '')}</span>
-        <span class="score ${isFinished ? 'finished' : ''}">
-          <span class="match-date">${formatDate(match.dateEvent)}</span>
-          ${isFinished ? `<span class="score-line"><span class="score-num" data-target="${match.intHomeScore}">0</span> - <span class="score-num" data-target="${match.intAwayScore}">0</span></span>` : 'vs'}
+        <span class="score ${isFinished ? 'finished' : isLive ? 'live-score' : ''}">
+          ${topLineContent}
+          ${scoreInner}
           ${countdownHTML}
         </span>
         <span class="team-name away-name">${match.strAwayTeam.replace(' Rugby', '')}</span>
