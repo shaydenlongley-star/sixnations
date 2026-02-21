@@ -79,18 +79,16 @@ function displayTryScorers() {
   container.innerHTML = tryScorers.map((player, index) => {
     const color = teamColors[player.team] || '#666';
     const pct = Math.round((player.tries / maxTries) * 100);
-    const rankColor = rankColors[index] || 'rgba(255,255,255,0.25)';
+    const rankColor = rankColors[index] || '#ffffff';
 
     return `
       <div class="try-row" style="border-left: 3px solid ${color}; background: linear-gradient(135deg, ${color}18 0%, rgba(6,8,16,0) 60%);">
         <span class="try-rank" style="color: ${rankColor};">${index + 1}</span>
         <div class="try-player">
           <div class="try-player-name">${player.name}</div>
-          <div class="try-bottom">
-            <span class="try-team-badge" style="border-color: ${color}66;">${player.team.replace(' Rugby', '')}</span>
-            <div class="try-bar-track">
-              <div class="try-bar-fill" style="width: ${pct}%; background: ${color};"></div>
-            </div>
+          <span class="try-team-badge" style="border-color: ${color}66;">${player.team.replace(' Rugby', '')}</span>
+          <div class="try-bar-track">
+            <div class="try-bar-fill" style="width: ${pct}%; background: ${color};"></div>
           </div>
         </div>
         <div class="try-count">${player.tries}<span class="try-label">tries</span></div>
