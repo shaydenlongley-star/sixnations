@@ -142,8 +142,49 @@ function startCountdowns() {
   countdownInterval = setInterval(() => {
     document.querySelectorAll('.countdown[data-date]').forEach(el => {
       const text = getCountdown(el.dataset.date, el.dataset.time);
-      el.textContent = text ? `Kicks off in ${text}` : '';
+      if (text) {
+        el.textContent = `Kicks off in ${text}`;
+      } else {
+        const card = el.closest('.match-card');
+        if (card && !card.dataset.liveTriggered) {
+          card.dataset.liveTriggered = 'true';
+          triggerLiveMode(card, el.dataset.date, el.dataset.time);
+        }
+        el.remove();
+      }
     });
+  }, 1000);
+}
+
+function triggerLiveMode(card, dateStr, timeStr) {
+  const badge = card.querySelector('.status-badge');
+  if (badge) {
+    badge.className = 'status-badge live';
+    badge.innerHTML = '<span class="live-dot"></span>Live';
+  }
+
+  const scoreEl = card.querySelector('.score');
+  if (scoreEl) scoreEl.classList.add('live-score');
+
+  const matchDate = card.querySelector('.match-date');
+  if (matchDate) {
+    matchDate.className = 'live-time';
+    matchDate.textContent = 'H1';
+  }
+
+  const vsText = card.querySelector('.vs-text');
+  if (vsText) vsText.textContent = '0 - 0';
+
+  const liveTimeEl = card.querySelector('.live-time');
+  const kickoff = new Date(`${dateStr}T${timeStr}`);
+
+  setInterval(() => {
+    const elapsed = Math.floor((new Date() - kickoff) / 60000);
+    if (!liveTimeEl) return;
+    if (elapsed <= 40)      liveTimeEl.textContent = `H1  ${elapsed}'`;
+    else if (elapsed <= 50) liveTimeEl.textContent = 'Half Time';
+    else if (elapsed <= 90) liveTimeEl.textContent = `H2  ${elapsed - 50}'`;
+    else                    liveTimeEl.textContent = 'Full Time';
   }, 1000);
 }
 
@@ -254,10 +295,10 @@ function displayFixtures(events, oddsData) {
         card.style.background = `linear-gradient(to right, ${homeColor}55 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.95) 60%, ${awayColor}55 100%)`;
       }
 
-      if (!isLive) {
+      if (!isLive && match.strTime) {
         const initialCountdown = getCountdown(match.dateEvent, match.strTime);
         if (initialCountdown) {
-          countdownHTML = `<div class="countdown" data-date="${match.dateEvent}" data-time="${match.strTime || '15:00:00'}">Kicks off in ${initialCountdown}</div>`;
+          countdownHTML = `<div class="countdown" data-date="${match.dateEvent}" data-time="${match.strTime}">Kicks off in ${initialCountdown}</div>`;
         }
       }
     } else if (!isLive) {
@@ -273,7 +314,7 @@ function displayFixtures(events, oddsData) {
     } else if (isLive) {
       scoreInner = `${match.intHomeScore} - ${match.intAwayScore}`;
     } else {
-      scoreInner = 'vs';
+      scoreInner = '<span class="vs-text">vs</span>';
     }
 
     const topLineContent = isLive
